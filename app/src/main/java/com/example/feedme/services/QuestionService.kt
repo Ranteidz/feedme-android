@@ -9,5 +9,5 @@ import retrofit2.http.Header
 interface QuestionService {
     @GET("questions")
     fun getQuestions(@Header("x-auth-token") authToken: String,
-                     @Header("roomId") roomId: String): Call<List<Question>>
+                     @Header("roomId") roomId: String): Call<ArrayList<Question>>
 }

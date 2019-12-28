@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Feedme</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="hej">HEEEJ</string>
-
+    <string name="title_feedback">Feedback</string>
+    <string name="title_statistics">Statistics</string>
+    <string name="title_settings">Settings</string>
+    <string name="remote_url">"http://feedme.compute.dtu.dk/api-dev/"</string>
+    <string name="local_url">http://10.0.2.2/api-dev/</string>
     <string name="title_activity_questionnaire">QuestionnaireActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="refresh">Refresh</string>
 </resources>

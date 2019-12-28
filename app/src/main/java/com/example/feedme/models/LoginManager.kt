@@ -4,21 +4,18 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.example.feedme.services.LoginService
 import com.example.feedme.services.QuestionService
+import com.example.feedme.services.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.io.Serializable
 
-class LoginManager(private val sharedPrefs: SharedPreferences, private val retrofit: Retrofit) {
+class LoginManager(private val sharedPrefs: SharedPreferences) {
 
     sealed class JwtResult {
         data class Success(val value: String) : JwtResult()
         data class Failure(val error: Throwable) : JwtResult()
-    }
-
-    sealed class LoginResult {
-        object Success : LoginResult()
-        data class Failure(val error: String) : LoginResult()
     }
 
     private val TAG = "LoginManager"
@@ -34,18 +31,26 @@ class LoginManager(private val sharedPrefs: SharedPreferences, private val retro
     }
 
     fun anonymousLogin(forceCall: Boolean, callback: SimpleCallback) {
+        val retrofit = RetrofitClient.retrofit
         val jwtKey = sharedPrefs.getString(JWT_KEY, null)
         if (jwtKey == null || forceCall) {
             val service = retrofit.create(LoginService::class.java)
             val call = service.anonymousLogin()
 
-            call.enqueue(object : Callback<String>{
-                override fun onFailure(call: Call<String>, t: Throwable) {
+            call.enqueue(object : Callback<User> {
+                override fun onFailure(call: Call<User>, t: Throwable) {
                     Log.i(TAG, t.toString())
                 }
 
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response.code() == 200) {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    val code = response.code()
+                    Log.i(TAG, "JWT: $code")
+                    if (code == 200) {
+                        val jwt = response.headers()["x-auth-token"]
+                        val editor = sharedPrefs.edit()
+                        editor.putString(JWT_KEY, jwt)
+                        editor.apply()
+
                         callback.onSuccess()
                     } else {
                         callback.onFailure(response.code())
@@ -55,11 +60,9 @@ class LoginManager(private val sharedPrefs: SharedPreferences, private val retro
 
             })
 
+        } else {
+            callback.onSuccess()
         }
-    }
-
-    fun getQuestions() {
-        val questionService = retrofit.create(QuestionService::class.java)
     }
 
     fun getJwtToken(): JwtResult {
