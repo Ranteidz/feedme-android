@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity(), SettingsFragment.OnFragmentInteraction
         Toast.makeText(this, "HEJJ", Toast.LENGTH_LONG).show()
         val roomId = getRooms()
         val questionService = retrofit.create(QuestionService::class.java)
-        val call = questionService.getQuestions(jwt, roomId)
+        val call = questionService.getQuestions(jwt, roomId, true)
         call.enqueue(object : Callback<ArrayList<Question>?> {
             override fun onFailure(call: Call<ArrayList<Question>?>, t: Throwable) {
                 Log.i(TAG, "HEJJJJJ")

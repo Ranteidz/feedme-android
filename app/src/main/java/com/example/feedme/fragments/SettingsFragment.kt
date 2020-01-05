@@ -48,7 +48,7 @@ class SettingsFragment : Fragment() {
 
             val roomId = "5e07526f6151b96aacb4a637"
             val questionService = retrofit.create(QuestionService::class.java)
-            val call = questionService.getQuestions("jsonwebtoken", roomId)
+            val call = questionService.getQuestions("jsonwebtoken", roomId, true)
 
 
             call.enqueue(object : Callback<ArrayList<Question>> {
