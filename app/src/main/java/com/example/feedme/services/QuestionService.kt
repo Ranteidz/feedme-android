@@ -10,7 +10,6 @@ import retrofit2.http.Query
 interface QuestionService {
     @GET("questions")
     fun getQuestions(@Header("x-auth-token") authToken: String,
-                     @Header("roomId") roomId: String,
-                     @Query("notAnswered") notAnswered: Boolean
+                     @Header("roomId") roomId: String
     ): Call<ArrayList<Question>>
 }

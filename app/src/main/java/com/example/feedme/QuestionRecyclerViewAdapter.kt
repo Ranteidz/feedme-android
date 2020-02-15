@@ -1,14 +1,15 @@
 package com.example.feedme
 
-import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.Spinner
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.example.feedme.models.Question
 import kotlinx.android.synthetic.main.fragment_question.view.*
 
@@ -18,15 +19,14 @@ import kotlinx.android.synthetic.main.fragment_question.view.*
  */
 class QuestionRecyclerViewAdapter() :
     RecyclerView.Adapter<QuestionRecyclerViewAdapter.ViewHolder>() {
-    val TAG = "QuestionRecyclerViewAdapter"
-    private val mValues = ArrayList<Question>()
+    private val mQuestions = ArrayList<Question>()
     private lateinit var interactionListener: QuestionInteractionListener
 
     fun setQuestionsList(questions: List<Question>?, listener: QuestionInteractionListener) {
         interactionListener = listener
-        mValues.clear()
+        mQuestions.clear()
         if (questions != null) {
-            mValues.addAll(questions)
+            mQuestions.addAll(questions)
         } else {
             Log.i(TAG, "Questions null")
         }
@@ -41,56 +41,47 @@ class QuestionRecyclerViewAdapter() :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mValues[position]
-        val answerOptions = ArrayList<String>()
-        for (answerOption in item.answerOptions) {
-            if (answerOption.value != null) {
-                answerOptions.add(answerOption.value)
+        val question = mQuestions[position]
+        val context = holder.mButtonLayout.context
+
+        if (holder.mButtonLayout.childCount != question.answerOptions.size) {
+            holder.mButtonLayout.removeAllViews()
+            for (answer in question.answerOptions){
+                val btnStyle = android.R.style.Widget_Material_Button
+                val button = Button(ContextThemeWrapper(context, btnStyle), null, btnStyle)
+                val layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                val r = context.resources
+                val sideMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, r.displayMetrics).toInt()
+                val topMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, r.displayMetrics).toInt()
+
+                layoutParams.setMargins(sideMargin , topMargin, sideMargin , 0)
+                button.layoutParams = layoutParams
+
+                button.text = answer.value
+                button.setOnClickListener { interactionListener.onAnswer(question._id, answer._id) }
+                holder.mButtonLayout.addView(button)
+
             }
         }
-        val adapter = ArrayAdapter<String>(
-            holder.mSpinner.context,
-            android.R.layout.simple_spinner_item,
-            answerOptions
-        )
-        holder.mSpinner.adapter = adapter
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        holder.mSendBtn.setOnClickListener {
-            interactionListener.onSendClick(position, answerOptions.indexOf(holder.mSpinner.selectedItem.toString()))
-        }
 
-        /*holder.mYesOptionView.text = item.answerOptions[0].value
-            holder.mSendBtn.text = item.answerOptions[1].value
-            holder.mYesOptionView.setOnClickListener {
-                interactionListener.onAnswerClick(
-                    position,
-                    0
-                )
-            }
-            holder.mSendBtn.setOnClickListener {
-                interactionListener.onAnswerClick(
-                    position,
-                    1
-                )
-            }
-            holder.mSendBtn.visibility = View.VISIBLE
-            holder.mSpinner.visibility = View.INVISIBLE
-        }*/
-
-        holder.mTitleView.text = item.value
+        holder.mTitleView.text = question.value
 
         with(holder.mView) {
-            tag = item
+            tag = "item"
         }
     }
 
-    override fun getItemCount(): Int = mValues.size
+    override fun getItemCount(): Int = mQuestions.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mTitleView: TextView = mView.title
-        val mSendBtn: Button = mView.sendBtn
-        val mSpinner: Spinner = mView.questionSpinner
+        val mButtonLayout: LinearLayout = mView.buttonLayout
+//        val mSendBtn: Button = mView.sendBtn
+//        val mSpinner: Spinner = mView.questionSpinner
 
         override fun toString(): String {
             return super.toString() + " '" + mTitleView.text + "'"
@@ -98,6 +89,10 @@ class QuestionRecyclerViewAdapter() :
     }
 
     interface QuestionInteractionListener {
-        fun onSendClick(position: Int, answer: Int)
+        fun onAnswer(questionId: String, answerId: String)
+    }
+
+    companion object {
+        const val TAG = "QuestionRecyclerViewAdapter"
     }
 }
