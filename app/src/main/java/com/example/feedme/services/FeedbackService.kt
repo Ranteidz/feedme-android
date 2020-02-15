@@ -1,6 +1,6 @@
 package com.example.feedme.services
 
-import com.example.feedme.fragments.ClientFeedback
+import com.example.feedme.models.ClientFeedback
 import com.example.feedme.models.Feedback
 import retrofit2.Call
 import retrofit2.http.*

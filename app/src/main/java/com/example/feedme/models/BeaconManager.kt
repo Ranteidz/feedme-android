@@ -1,5 +1,6 @@
 package com.example.feedme.models
 
+/*<<<<<<< HEAD
 import android.util.Log
 import com.kontakt.sdk.android.ble.manager.ProximityManager
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener
@@ -49,4 +50,7 @@ class BeaconManager(private val proximityManager: ProximityManager) : IBeaconLis
         val beaconName = iBeacon.toString()
         Log.i(TAG, "IBeacon discovered: $beaconName")
     }
+=======*/
+class BeaconManager {
+
 }

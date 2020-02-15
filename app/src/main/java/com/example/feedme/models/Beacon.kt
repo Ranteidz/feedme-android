@@ -1,23 +1,48 @@
 package com.example.feedme.models
 
-class Beacon(val name: String, val building: String, val uuid: String) {
-    private val SIGNAL_MAX = 100
-    private val rssis = arrayOf(SIGNAL_MAX, SIGNAL_MAX, SIGNAL_MAX, SIGNAL_MAX, SIGNAL_MAX)
-    var index = 0
-    private val SIGNAL_AMOUNT = 5
+import androidx.annotation.VisibleForTesting
+import java.time.Duration
+import java.time.LocalDateTime
 
-    fun addRssi(signal: Int) {
-        index = (index + 1) % SIGNAL_AMOUNT
-        rssis[index] = signal
+
+
+class Beacon {
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val rssiValues =  ArrayList<RssiValue>()
+
+    fun addRssi(rssi : RssiValue) {
+        rssiValues.add(rssi)
+
+        if (rssiValues.size > MAX_RSSI_AMOUNT){
+            rssiValues.removeIf{
+                Duration.between(LocalDateTime.now(), it.time).abs().seconds > RSSI_EXPIRATION
+            }
+        }
     }
 
-    fun averageRssi(): Int {
-        var sum = 0
-
-        for (i in 0..SIGNAL_AMOUNT) {
-            sum += rssis[i]
+    fun averageRssi(now: LocalDateTime): Int {
+        rssiValues.removeIf{
+            Duration.between(now, it.time).abs().seconds > RSSI_EXPIRATION
         }
 
-        return sum / SIGNAL_AMOUNT
+        if (rssiValues.size == 0) return MIN_RSSI_VALUE
+
+        var average = 0
+
+        for (rssi in rssiValues) {
+            average += rssi.value
+        }
+
+        return average/rssiValues.size
+    }
+
+    fun hasRssiValues() : Boolean = rssiValues.size > 0
+
+    private companion object {
+        const val TAG = "Beacon"
+        const val MIN_RSSI_VALUE = -100
+        const val RSSI_EXPIRATION = 5
+        const val MAX_RSSI_AMOUNT = 10
     }
 }

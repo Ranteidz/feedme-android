@@ -3,13 +3,10 @@ package com.example.feedme.models
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.feedme.services.LoginService
-import com.example.feedme.services.QuestionService
 import com.example.feedme.services.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import java.io.Serializable
 
 class LoginManager(private val sharedPrefs: SharedPreferences) {
 
@@ -39,7 +36,7 @@ class LoginManager(private val sharedPrefs: SharedPreferences) {
 
             call.enqueue(object : Callback<User> {
                 override fun onFailure(call: Call<User>, t: Throwable) {
-                    Log.i(TAG, t.toString())
+
                 }
 
                 override fun onResponse(call: Call<User>, response: Response<User>) {
@@ -69,7 +66,7 @@ class LoginManager(private val sharedPrefs: SharedPreferences) {
         val jwt = sharedPrefs.getString(JWT_KEY, null)
         if (jwt != null)
             return JwtResult.Success(jwt)
-        return JwtResult.Failure(Error("Hej"))
+        return JwtResult.Failure(Error("Hej")) // TODO: This should indicate error
     }
 
     interface SimpleCallback {

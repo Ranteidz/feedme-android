@@ -5,12 +5,12 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class AnswerOption(
-    @SerializedName("_id") val _id: String?,
-    @SerializedName("value") val value: String?
+    @SerializedName("_id") val _id: String,
+    @SerializedName("value") val value: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString()
+        parcel.readString().toString(),
+        parcel.readString().toString()
     ) {
     }
 

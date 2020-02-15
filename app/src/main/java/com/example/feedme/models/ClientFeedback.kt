@@ -1,4 +1,4 @@
-package com.example.feedme.fragments
+package com.example.feedme.models
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable

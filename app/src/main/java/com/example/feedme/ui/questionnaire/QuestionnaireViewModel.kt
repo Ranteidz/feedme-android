@@ -1,6 +1,6 @@
 package com.example.feedme.ui.questionnaire
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 
 class QuestionnaireViewModel : ViewModel() {
     // TODO: Implement the ViewModel

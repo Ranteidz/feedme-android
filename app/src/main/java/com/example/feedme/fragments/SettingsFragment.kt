@@ -1,9 +1,9 @@
 package com.example.feedme.fragments
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import android.widget.Button
 
 import com.example.feedme.R
-import com.example.feedme.models.LoginManager
 import com.example.feedme.models.Question
 import com.example.feedme.services.QuestionService
+import com.example.feedme.viewmodels.SettingsViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,7 +48,7 @@ class SettingsFragment : Fragment() {
 
             val roomId = "5e07526f6151b96aacb4a637"
             val questionService = retrofit.create(QuestionService::class.java)
-            val call = questionService.getQuestions("jsonwebtoken", roomId, true)
+            val call = questionService.getQuestions("jsonwebtoken", roomId)
 
             call.enqueue(object : Callback<ArrayList<Question>> {
                 override fun onFailure(call: Call<ArrayList<Question>>, t: Throwable) {

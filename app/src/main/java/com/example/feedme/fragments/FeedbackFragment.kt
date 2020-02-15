@@ -1,25 +1,27 @@
 package com.example.feedme.fragments
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feedme.QuestionRecyclerViewAdapter
 import com.example.feedme.databinding.FeedbackFragmentBinding
 import com.example.feedme.models.LoginManager
 import com.example.feedme.models.Question
+import com.example.feedme.models.Room
+import com.example.feedme.services.RetrofitClient
+import com.example.feedme.services.RoomService
+import com.example.feedme.viewmodels.FeedbackViewModel
 
 class FeedbackFragment : Fragment() {
     companion object {
+        const val TAG = "FeedbackFragment"
         fun newInstance() = FeedbackFragment()
     }
 
@@ -29,64 +31,71 @@ class FeedbackFragment : Fragment() {
     private lateinit var questionsAdapter: QuestionRecyclerViewAdapter
     private lateinit var jwt: String
     private lateinit var spinner: Spinner
+//    private lateinit var roomTextView: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        jwt =
-            arguments?.getString("jwt") ?: throw RuntimeException("$context must send jwt token")
+        jwt = arguments?.getString("jwt")!!
         binding = FeedbackFragmentBinding.inflate(inflater, container, false)
 
         questionsAdapter = QuestionRecyclerViewAdapter()
         binding.questionsListView.layoutManager = LinearLayoutManager(context)
         binding.questionsListView.adapter = questionsAdapter
-        spinner = binding.spinner
+//        spinner = binding.spinner
+//        roomTextView = binding.roomTxtView
 
-        binding.refreshBtn.setOnClickListener {
-            viewModel.refresh()
-        }
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, FeedbackViewModelFactory(jwt))
+        viewModel = ViewModelProvider(this, FeedbackViewModel.FeedbackViewModelFactory(jwt))
             .get(FeedbackViewModel::class.java)
         viewModel.liveQuestions.observe(
-            this,
+            viewLifecycleOwner,
             Observer {
                 questionsAdapter.setQuestionsList(it, viewModel)
             })
-        val adapter = ArrayAdapter<String>(
+       /* val adapter = ArrayAdapter<String>(
             context!!,
             android.R.layout.simple_spinner_item,
             viewModel.roomNames
-        )
+        )*/
 
-        spinner.adapter = adapter
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        viewModel.liveRooms.observe(this, Observer {
-            adapter.notifyDataSetChanged()
-        })
+//        spinner.adapter = adapter
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        spinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    Toast.makeText(context, "ØV ", Toast.LENGTH_LONG).show()
-                }
+//        viewModel.liveRooms.observe(viewLifecycleOwner, Observer {
+//            adapter.notifyDataSetChanged()
+//        })
 
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    viewModel.selectedRoom = position
-                }
+//        viewModel.liveRoom.observe(viewLifecycleOwner, Observer {
+//            roomTextView.text = it.name
+//        })
 
-            }
-        viewModel.fetchRooms()
+//        spinner.onItemSelectedListener =
+//            object : AdapterView.OnItemSelectedListener {
+//                override fun onNothingSelected(parent: AdapterView<*>?) {
+//                    Toast.makeText(context, "ØV ", Toast.LENGTH_LONG).show()
+//                }
+//
+//                override fun onItemSelected(
+//                    parent: AdapterView<*>?,
+//                    view: View?,
+//                    position: Int,
+//                    id: Long
+//                ) {
+//                    viewModel.updateRoom(position)
+//
+//                }
+//
+//            }
+        val retrofit = RetrofitClient.retrofit
+        val roomService = retrofit.create(RoomService::class.java)
+        viewModel.fetchRooms(roomService)
 
     }
 
@@ -97,6 +106,10 @@ class FeedbackFragment : Fragment() {
         } else {
             throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
+    }
+
+    fun onRoomUpdated(room: Room){
+        viewModel.onNewRoomEstimated(room)
     }
 
     interface OnFragmentInteractionListener {
