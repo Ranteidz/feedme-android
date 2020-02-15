@@ -50,7 +50,6 @@ class SettingsFragment : Fragment() {
             val questionService = retrofit.create(QuestionService::class.java)
             val call = questionService.getQuestions("jsonwebtoken", roomId, true)
 
-
             call.enqueue(object : Callback<ArrayList<Question>> {
                 override fun onFailure(call: Call<ArrayList<Question>>, t: Throwable) {
                     Log.i("YO", "HEJ")
@@ -64,12 +63,9 @@ class SettingsFragment : Fragment() {
                     val questions = response.body()
                     if (questions != null)
                         listener?.onFragmentInteraction(questions)
-
                 }
             })
-
         }
-
         return layoutInflater
     }
 
@@ -85,7 +81,7 @@ class SettingsFragment : Fragment() {
         if (context is SettingsFragment.OnFragmentInteractionListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
     }
 

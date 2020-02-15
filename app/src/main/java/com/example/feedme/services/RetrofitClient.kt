@@ -8,7 +8,7 @@ class RetrofitClient {
     companion object{
         val retrofit: Retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("http://10.0.2.2/api-dev/")
+            .baseUrl("http://192.168.66.81/api-dev/")
             .build()
     }
 }
