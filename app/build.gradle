@@ -8,6 +8,7 @@ android {
 
     buildFeatures{
         viewBinding = true
+        compose = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -15,6 +16,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    composeOptions {
+        kotlinCompilerVersion "1.3.61-dev-withExperimentalGoogleExtensions-20200129"
+        kotlinCompilerExtensionVersion "0.1.0-dev07"
     }
 
     compileSdkVersion 29
@@ -28,35 +34,48 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
+
 dependencies {
+    def compose_version = "0.1.0-dev07"
+    implementation "androidx.compose:compose-runtime:$compose_version"
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.61"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.70"
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.google.android.gms:play-services-plus:17.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'androidx.work:work-runtime:2.3.0'
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'com.google.truth:truth:0.43'
+    implementation 'androidx.work:work-runtime:2.3.3'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation "androidx.ui:ui-tooling:$compose_version"
+    implementation "androidx.ui:ui-layout:$compose_version"
+    implementation "androidx.ui:ui-material:$compose_version"
+    implementation "androidx.ui:ui-foundation:$compose_version"
+    implementation "androidx.ui:ui-animation:$compose_version"
+    implementation "androidx.ui:ui-framework:$compose_version"
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'com.google.truth:truth:1.0.1'
     testImplementation 'org.mockito:mockito-core:2.19.0'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.3.1'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.4.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'com.google.firebase:firebase-messaging:20.1.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.2'
     implementation 'com.kontaktio:sdk:4.0.3'
 }
+

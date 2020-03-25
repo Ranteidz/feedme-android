@@ -1,6 +1,5 @@
 package com.example.feedme.ui.questionnaire
 
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import com.example.feedme.R
 
 class QuestionnaireFragment : Fragment() {
@@ -55,7 +55,7 @@ class QuestionnaireFragment : Fragment() {
         )
         lp.marginEnd = 50
         lp.marginStart = 50
-        bottomBtn.background = context?.let { ContextCompat.getDrawable(it, R.color.colorPrimary) }
+        bottomBtn.background = context?.let { ContextCompat.getDrawable(it, R.color.primaryColor) }
         cl.addView(bottomBtn, lp)
 
         constraintSet.clone(cl)
@@ -79,7 +79,7 @@ class QuestionnaireFragment : Fragment() {
                 newBtn.id = R.id.new_button_id + i + 1
 
                 newBtn.background =
-                    context?.let { ContextCompat.getDrawable(it, R.color.colorPrimary) }
+                    context?.let { ContextCompat.getDrawable(it, R.color.primaryColor) }
 
                 cl.addView(newBtn, lp)
                 constraintSet.clone(cl)
@@ -104,7 +104,7 @@ class QuestionnaireFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(QuestionnaireViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(QuestionnaireViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

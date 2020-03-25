@@ -8,12 +8,18 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.Composable
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.ui.core.Text
+import androidx.ui.core.setContent
+import androidx.ui.layout.Column
+import androidx.ui.material.MaterialTheme
+import androidx.ui.tooling.preview.Preview
 import com.example.feedme.fragments.FeedbackFragment
 import com.example.feedme.fragments.SettingsFragment
 import com.example.feedme.models.LoginManager
@@ -34,9 +40,11 @@ import java.util.concurrent.ScheduledExecutorService
 
 const val PERMISSION_COARSE_LOCATION = 0
 
-class MainActivity : AppCompatActivity(), SettingsFragment.OnFragmentInteractionListener,
+class MainActivity : AppCompatActivity()
+    , SettingsFragment.OnFragmentInteractionListener,
     FeedbackFragment.OnFragmentInteractionListener,
-    ActivityCompat.OnRequestPermissionsResultCallback {
+    ActivityCompat.OnRequestPermissionsResultCallback
+{
 
     companion object {
         const val TAG = "MainActivity"
@@ -51,13 +59,11 @@ class MainActivity : AppCompatActivity(), SettingsFragment.OnFragmentInteraction
     private lateinit var loginManager: LoginManager
     private lateinit var beaconViewModel: BeaconViewModel
     private lateinit var layout: View
-    private lateinit var service : ScheduledExecutorService
+    private lateinit var service: ScheduledExecutorService
     private lateinit var jwt: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-//        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         loginManager = LoginManager(getSharedPreferences(PREF_NAME, PRIVATE_MODE))
 
@@ -78,7 +84,7 @@ class MainActivity : AppCompatActivity(), SettingsFragment.OnFragmentInteraction
         }
         beaconViewModel = ViewModelProvider(this,
             BeaconViewModel.BeaconModelFactory(proximityManager, signalMapService, signalMapCallback ))
-        .get(BeaconViewModel::class.java)
+            .get(BeaconViewModel::class.java)
 
         beaconViewModel.currentRoom.observe(this, Observer { room ->
             if (active is FeedbackFragment) {
@@ -122,7 +128,9 @@ class MainActivity : AppCompatActivity(), SettingsFragment.OnFragmentInteraction
                 val msg = "HEJ"
                 Log.d(TAG, token)
             })
+
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -198,8 +206,8 @@ class MainActivity : AppCompatActivity(), SettingsFragment.OnFragmentInteraction
         fragment1.arguments = args
         fragment2.arguments = args
 //        fm.beginTransaction().add(R.id.main_container, fragment3, "3").hide(fragment3).commit()
-        fm.beginTransaction().add(R.id.main_container, fragment2, "2").hide(fragment2).commit()
-        fm.beginTransaction().add(R.id.main_container, fragment1, "1").commit()
+        fm.beginTransaction().add(R.id.main_container, fragment2, "2").commit()
+//        fm.beginTransaction().add(R.id.main_container, fragment1, "1").commit()
     }
 
     private fun login(forceCall: Boolean, callback: LoginManager.SimpleCallback) {

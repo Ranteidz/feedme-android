@@ -1,22 +1,19 @@
 package com.example.feedme.fragments
 
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.lifecycle.ViewModelProvider
+import androidx.ui.core.setContent
 
 import com.example.feedme.R
+import com.example.feedme.models.AnswerOption
 import com.example.feedme.models.Question
-import com.example.feedme.services.QuestionService
+import com.example.feedme.ui.FeedbackScreen
 import com.example.feedme.viewmodels.SettingsViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -36,6 +33,7 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         retrofit = Retrofit.Builder()
             .baseUrl(getString(R.string.local_url))
             .addConverterFactory(GsonConverterFactory.create())
@@ -43,7 +41,12 @@ class SettingsFragment : Fragment() {
 
         val layoutInflater = inflater.inflate(R.layout.settings_fragment, container, false)
 
-        val questionBtn = layoutInflater.findViewById<Button>(R.id.button)
+        (layoutInflater as ViewGroup).setContent {
+           arrayListOf(        Question("", false, "How are you?",
+               arrayListOf(AnswerOption("", "Good"), AnswerOption("", "Bad"))))
+        }
+
+        /*val questionBtn = layoutInflater.findViewById<Button>(R.id.button)
         questionBtn.setOnClickListener {
 
             val roomId = "5e07526f6151b96aacb4a637"
@@ -65,13 +68,13 @@ class SettingsFragment : Fragment() {
                         listener?.onFragmentInteraction(questions)
                 }
             })
-        }
+        }*/
         return layoutInflater
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
         // TODO: Use the ViewModel
 
     }
@@ -93,5 +96,4 @@ class SettingsFragment : Fragment() {
     interface OnFragmentInteractionListener {
         fun onFragmentInteraction(questions: ArrayList<Question>)
     }
-
 }
